@@ -77,7 +77,7 @@ static const struct proc_ops proc_entry_fops = {
     .proc_write = clipboard_write,
 };
 
-static void init_sensed(void)
+int init_sensed(void)
 {
     int ret;
 
@@ -98,6 +98,8 @@ static void init_sensed(void)
 
     timer_setup(&timer_1hz, sensed_gpio, 0);
     mod_timer(&timer_1hz, jiffies + msecs_to_jiffies(INTERVAL_MS));
+
+    return 0;
 }
 
 int init_clipboard_module(void)
@@ -125,8 +127,9 @@ int init_clipboard_module(void)
             printk(KERN_INFO "Clipboard: Modulo cargado..!!\n");
         }
     }
-
-    init_sensed();
+    int err = init_sensed();
+    if (err < 0)
+        return err;
 
     return ret;
 }
