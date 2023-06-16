@@ -18,7 +18,8 @@ static char *clipboard; // Space for the "clipboard"
 static void sensed_gpio(struct timer_list *timer)
 {
     int value = gpio_get_value(GPIO_PIN);
-    printk(KERN_INFO "%d", value);
+    strncpy(clipboard, value, BUFFER_LENGTH - 1);
+
     mod_timer(timer, jiffies + msecs_to_jiffies(INTERVAL_MS));
 }
 
@@ -76,14 +77,20 @@ static const struct proc_ops proc_entry_fops = {
     .proc_write = clipboard_write,
 };
 
-void init_sensed()
+static void init_sensed(void)
 {
-    if (gpio_request(GPIO_PIN, "pin_gpio") < 0) {
+    int ret;
+
+    ret = gpio_request(GPIO_PIN, "pin_gpio");
+    if (ret < 0)
+    {
         printk(KERN_INFO "Error requesting GPIO %d\n", GPIO_PIN);
         return ret;
     }
 
-    if (gpio_direction_output(GPIO_PIN, 0) < 0) {
+    ret = gpio_direction_output(GPIO_PIN, 0);
+    if (ret < 0)
+    {
         printk(KERN_ERR "Error setting GPIO direction\n");
         gpio_free(GPIO_PIN);
         return ret;
