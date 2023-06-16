@@ -8,7 +8,7 @@
 #include <linux/gpio.h>
 
 #define BUFFER_LENGTH PAGE_SIZE
-#define GPIO_PIN 23
+#define GPIO_PIN 17
 #define INTERVAL_MS 1000
 
 static struct timer_list timer_1hz;
@@ -18,7 +18,7 @@ static char *clipboard; // Space for the "clipboard"
 static void sensed_gpio(struct timer_list *timer)
 {
     int value = gpio_get_value(GPIO_PIN);
-    strncpy(clipboard, value, BUFFER_LENGTH - 1);
+    strncpy(clipboard, (char *) value, BUFFER_LENGTH - 1);
 
     mod_timer(timer, jiffies + msecs_to_jiffies(INTERVAL_MS));
 }
@@ -127,6 +127,7 @@ int init_clipboard_module(void)
             printk(KERN_INFO "Clipboard: Modulo cargado..!!\n");
         }
     }
+
     int err = init_sensed();
     if (err < 0)
         return err;
