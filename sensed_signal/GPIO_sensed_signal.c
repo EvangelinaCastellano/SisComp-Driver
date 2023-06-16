@@ -18,7 +18,19 @@ static char *clipboard; // Space for the "clipboard"
 static void sensed_gpio(struct timer_list *timer)
 {
     int value = gpio_get_value(GPIO_PIN);
-    printk(KERN_INFO "GPIO_sensed: %d", value);
+
+    if (value == 1)
+    {
+        strncpy(clipboard, "1", BUFFER_LENGTH - 1);
+    }
+
+    else
+    {
+        strncpy(clipboard, "0", BUFFER_LENGTH - 1);
+    }
+
+    clipboard[BUFFER_LENGTH - 1] = '\0';
+
     mod_timer(timer, jiffies + msecs_to_jiffies(INTERVAL_MS));
 }
 
