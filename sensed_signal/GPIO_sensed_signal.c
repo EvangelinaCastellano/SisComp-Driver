@@ -18,8 +18,8 @@ static char *clipboard; // Space for the "clipboard"
 static void sensed_gpio(struct timer_list *timer)
 {
     int value = gpio_get_value(GPIO_PIN);
-    strncpy(clipboard, (char *) value, BUFFER_LENGTH - 1);
-
+    strncpy(clipboard, (char *)value, BUFFER_LENGTH - 1);
+    clipboard[BUFFER_LENGTH - 1] = '\0';
     mod_timer(timer, jiffies + msecs_to_jiffies(INTERVAL_MS));
 }
 
@@ -113,7 +113,6 @@ int init_clipboard_module(void)
     }
     else
     {
-
         memset(clipboard, 0, BUFFER_LENGTH);
         proc_entry = proc_create("clipboard", 0666, NULL, &proc_entry_fops);
         if (proc_entry == NULL)
@@ -130,7 +129,11 @@ int init_clipboard_module(void)
 
     int err = init_sensed();
     if (err < 0)
+    {
+        remove_proc_entry("clipboard", NULL);
+        vfree(clipboard);
         return err;
+    }
 
     return ret;
 }
