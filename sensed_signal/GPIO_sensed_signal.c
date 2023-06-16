@@ -18,8 +18,7 @@ static char *clipboard; // Space for the "clipboard"
 static void sensed_gpio(struct timer_list *timer)
 {
     int value = gpio_get_value(GPIO_PIN);
-    strncpy(clipboard, (char *)value, BUFFER_LENGTH - 1);
-    clipboard[BUFFER_LENGTH - 1] = '\0';
+    printk(KERN_INFO "GPIO_sensed: %d", value);
     mod_timer(timer, jiffies + msecs_to_jiffies(INTERVAL_MS));
 }
 
@@ -88,7 +87,7 @@ int init_sensed(void)
         return ret;
     }
 
-    ret = gpio_direction_output(GPIO_PIN, 0);
+    ret = gpio_direction_input(GPIO_PIN);
     if (ret < 0)
     {
         printk(KERN_ERR "Error setting GPIO direction\n");
@@ -105,6 +104,7 @@ int init_sensed(void)
 int init_clipboard_module(void)
 {
     int ret = 0;
+    int err = 0;
     clipboard = (char *)vmalloc(BUFFER_LENGTH);
 
     if (!clipboard)
@@ -127,7 +127,7 @@ int init_clipboard_module(void)
         }
     }
 
-    int err = init_sensed();
+    err = init_sensed();
     if (err < 0)
     {
         remove_proc_entry("clipboard", NULL);
@@ -141,7 +141,6 @@ int init_clipboard_module(void)
 void exit_clipboard_module(void)
 {
     del_timer(&timer_1hz);
-    gpio_set_value(GPIO_PIN, 0);
     gpio_free(GPIO_PIN);
 
     remove_proc_entry("clipboard", NULL);

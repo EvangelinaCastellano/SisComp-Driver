@@ -1,1 +1,0 @@
-cmd_/home/fabio/SistemasDeComputacion/Practico/5_device_drivers/SisComp-Driver/sensed_signal/modules.order := {   echo /home/fabio/SistemasDeComputacion/Practico/5_device_drivers/SisComp-Driver/sensed_signal/GPIO_sensed_signal.ko; :; } | awk '!x[$$0]++' - > /home/fabio/SistemasDeComputacion/Practico/5_device_drivers/SisComp-Driver/sensed_signal/modules.order
