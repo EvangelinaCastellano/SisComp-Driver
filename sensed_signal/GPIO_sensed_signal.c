@@ -8,17 +8,27 @@
 #include <linux/gpio.h>
 
 #define BUFFER_LENGTH PAGE_SIZE
-#define GPIO_PIN 17
+#define GPIO_PIN_17 17
+#define GPIO_PIN_22 22
 #define INTERVAL_MS 1000
 
 static struct timer_list timer_1hz;
 static struct proc_dir_entry *proc_entry;
 static char *clipboard; // Space for the "clipboard"
+static int signal = 0;
 
 static void sensed_gpio(struct timer_list *timer)
 {
-    int value = gpio_get_value(GPIO_PIN);
+    int value;
 
+    if (signal == 1)
+    {
+        value = gpio_get_value(GPIO_PIN_17);
+    }
+    else
+    {
+        value = gpio_get_value(GPIO_PIN_22);
+    }
     if (value == 1)
     {
         strncpy(clipboard, "1", BUFFER_LENGTH - 1);
@@ -56,6 +66,8 @@ static ssize_t clipboard_write(struct file *filp, const char __user *buf, size_t
     clipboard[len] = '\0'; /* Add the `\0' */
     *off += len;           /* Update the file pointer */
 
+    signal = (int)clipboard[0] - 48;
+
     return len;
 }
 
@@ -92,18 +104,33 @@ int init_sensed(void)
 {
     int ret;
 
-    ret = gpio_request(GPIO_PIN, "pin_gpio");
+    ret = gpio_request(GPIO_PIN_17, "pin_gpio_17");
     if (ret < 0)
     {
-        printk(KERN_INFO "Error requesting GPIO %d\n", GPIO_PIN);
+        printk(KERN_INFO "Error requesting GPIO %d\n", GPIO_PIN_17);
         return ret;
     }
 
-    ret = gpio_direction_input(GPIO_PIN);
+    ret = gpio_request(GPIO_PIN_22, "pin_gpio_22");
+    if (ret < 0)
+    {
+        printk(KERN_INFO "Error requesting GPIO %d\n", GPIO_PIN_22);
+        return ret;
+    }
+
+    ret = gpio_direction_input(GPIO_PIN_17);
     if (ret < 0)
     {
         printk(KERN_ERR "Error setting GPIO direction\n");
-        gpio_free(GPIO_PIN);
+        gpio_free(GPIO_PIN_17);
+        return ret;
+    }
+
+    ret = gpio_direction_input(GPIO_PIN_22);
+    if (ret < 0)
+    {
+        printk(KERN_ERR "Error setting GPIO direction\n");
+        gpio_free(GPIO_PIN_22);
         return ret;
     }
 
@@ -153,7 +180,8 @@ int init_clipboard_module(void)
 void exit_clipboard_module(void)
 {
     del_timer(&timer_1hz);
-    gpio_free(GPIO_PIN);
+    gpio_free(GPIO_PIN_17);
+    gpio_free(GPIO_PIN_22);
 
     remove_proc_entry("clipboard", NULL);
     vfree(clipboard);
