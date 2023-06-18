@@ -1,4 +1,4 @@
-obj-m += GPIO_sensed_signal.o
+obj-m += signal_sensor.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules

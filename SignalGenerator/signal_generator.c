@@ -1,8 +1,10 @@
 /*
     Este driver generará dos señales cuadradas:
-    1) señal de 1 Hz por el pin 18.
-    2) señal de 2 Hz por el pin 23.
+    1) señal de 0.25 Hz por el pin 18.
+    2) señal de 0.5 Hz por el pin 23.
 */
+
+//TO DO: CAMBIAR NOMBRES DE LAS VARIABLES QUE DICEN LA FRECUENCIA!!
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/gpio.h>
@@ -10,8 +12,8 @@
 
 #define LED_PIN_1HZ 18
 #define LED_PIN_2HZ 23
-#define INTERVAL_MS_1HZ 1000
-#define INTERVAL_MS_2HZ 500
+#define INTERVAL_MS_1HZ 4000
+#define INTERVAL_MS_2HZ 2000
 
 static struct timer_list led_timer_1hz;
 static struct timer_list led_timer_2hz;
