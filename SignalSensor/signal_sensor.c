@@ -17,6 +17,7 @@ int init_sensed(void);
 static void gpio_sensor(struct timer_list *timer);
 void exit_signal_module(void);
 static ssize_t signal_file_write(struct file *filp, const char __user *buf, size_t len, loff_t *off);
+static ssize_t signal_file_read(struct file *filp, char __user *buf, size_t len, loff_t *off);
 
 #define BUFFER_LENGTH PAGE_SIZE
 #define GPIO_PIN_17 17   // Pin para sensar señal de 1Hz
