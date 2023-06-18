@@ -147,12 +147,12 @@ static ssize_t signal_file_read(struct file *filp, char __user *buf, size_t len,
     if ((*off) > 0) // Tell the application that there is nothing left to read 
         return 0;
 
-    nr_bytes = strlen(clipboard);
+    nr_bytes = strlen(signal_file);
 
     if (len < nr_bytes)
         return -ENOSPC;
 
-    if (copy_to_user(buf, clipboard, nr_bytes))
+    if (copy_to_user(buf, signal_file, nr_bytes))
         return -EINVAL;
 
     (*off) += len; 
