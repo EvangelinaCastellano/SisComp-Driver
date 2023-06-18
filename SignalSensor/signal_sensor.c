@@ -139,6 +139,27 @@ static ssize_t signal_file_write(struct file *filp, const char __user *buf, size
     return len;
 }
 
+//Transfiere data desde el espacio de kernel al espacio de usuario, cat /proc/signal_file.
+static ssize_t signal_file_read(struct file *filp, char __user *buf, size_t len, loff_t *off){
+
+    int nr_bytes;
+
+    if ((*off) > 0) // Tell the application that there is nothing left to read 
+        return 0;
+
+    nr_bytes = strlen(clipboard);
+
+    if (len < nr_bytes)
+        return -ENOSPC;
+
+    if (copy_to_user(buf, clipboard, nr_bytes))
+        return -EINVAL;
+
+    (*off) += len; 
+
+    return nr_bytes;
+}
+
 void exit_signal_module(void){
     
     del_timer(&timer_1hz); //Se elimina el timer.
