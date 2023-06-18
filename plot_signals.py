@@ -12,12 +12,12 @@ reset_event = threading.Event()
 
 def write_to_proc(value):
     global x_values, y_values
-    command = f'echo "{value}" > /home/ecastellano/signal_file'
+    command = f'echo "{value}" > /proc/signal_file'
     subprocess.run(command, shell=True)
     reset_event.set()  # Configurar el evento de reinicio
 
 def read_to_proc():
-    command = f'cat /home/ecastellano/signal_file'
+    command = f'cat /proc/signal_file'
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return result.stdout
 
