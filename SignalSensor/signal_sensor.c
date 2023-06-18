@@ -30,7 +30,7 @@ static char *signal_file;
 static int signal = 0;
 
 static const struct proc_ops proc_entry_fops = {
-    //.proc_read = signal_file_read,
+    .proc_read = signal_file_read,
     .proc_write = signal_file_write,
 };
 
