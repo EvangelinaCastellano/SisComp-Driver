@@ -118,19 +118,6 @@ static void gpio_sensor(struct timer_list *timer){
 
 //Transfiere datos desde el espacio de usuario al espacio de kernel, echo "hola" > /proc/signal_file
 static ssize_t signal_file_write(struct file *filp, const char __user *buf, size_t len, loff_t *off){
-    
-    int available_space = BUFFER_LENGTH - 1;
-
-    if((*off) > 0) // The application can write in this entry just once
-        return 0;
-
-    if(len > available_space){
-        printk(KERN_INFO "ERROR: No hay espacio disponible.\n");
-        return -ENOSPC;
-    }
-
-    if(copy_from_user(&signal_file[0], buf, len))
-        return -EFAULT;
 
     signal_file[len] = '\0';
     *off += len; // Update the file pointer
