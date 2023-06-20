@@ -35,8 +35,8 @@ def thread_func():
             plt.clf()
         
         # Agregar el valor leído a las listas
-        #x_values.append(current_time)
-        x_values.append(len(x_values) + 1)
+        x_values.append(current_time)
+        #x_values.append(len(x_values) + 1)
         y_values.append(float(result))
         
         # Actualizar la gráfica
@@ -45,7 +45,7 @@ def thread_func():
         plt.ylabel('Valor')
         plt.title('Gráfico en tiempo real')
         plt.grid(True)
-        plt.pause(0.3)  # Pausar por 1 segundo antes de la siguiente actualización
+        plt.pause(0.1)  # Pausar por 1 segundo antes de la siguiente actualización
 
 if __name__ == '__main__':
     plt.ion()  # Modo interactivo para la gráfica en tiempo real
