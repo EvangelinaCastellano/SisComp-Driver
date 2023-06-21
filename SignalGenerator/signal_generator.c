@@ -4,7 +4,6 @@
     2) señal de 5 s por el pin 23.
 */
 
-//TO DO: CAMBIAR NOMBRES DE LAS VARIABLES QUE DICEN LA FRECUENCIA!!
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/gpio.h>
